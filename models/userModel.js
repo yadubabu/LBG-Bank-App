@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const AccountSchema = new mongoose.Schema({
+const RegisterSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -13,21 +13,13 @@ const AccountSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  bankName: {
+  password: {
     type: String,
     required: true,
   },
-  AccountType: {
+  confirmpassword: {
     type: String,
-    required: true,
-  },
-  FixedDeposits: {
-    type: Number,
-    required: true,
-  },
-  Balance: {
-    type: Number,
     required: true,
   },
 });
-module.exports = mongoose.model("Accounts", AccountSchema);
+module.exports = mongoose.model("RegisterSchema", RegisterSchema);

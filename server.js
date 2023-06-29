@@ -1,10 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const data = require("./data/allAccount.json");
-const { Accounts } = require("./models/Accounts");
+const AccountSchema = require("./models/accountSchema");
+const bodyparser = require("body-parser");
+const RegisterSchema = require("./models/userModel");
 
 const app = express();
 app.use(express.json());
+app.use(bodyparser.urlencoded({ extended: true }));
 
 mongoose
   .connect(
@@ -19,6 +22,29 @@ mongoose
 app.get("/", async (req, res) => {
   res.send("Hello World");
 });
+app.post("/adduser", async (req, res) => {
+  const { name, email, pancard, password, confirmpassword } = req.body;
+  try {
+    const newUser = new RegisterSchema({
+      name,
+      email,
+      pancard,
+      password,
+      confirmpassword,
+    });
+    await newUser.save();
+    return res.json(await RegisterSchema.find());
+  } catch (err) {
+    console.log(err);
+  }
+});
+app.get("/getuser", async (req, res) => {
+  try {
+    return res.json(await RegisterSchema.find());
+  } catch (err) {
+    console.log(err);
+  }
+});
 app.get("/getallaccounts", async (req, res) => {
   try {
     return await res.json(data);
@@ -28,18 +54,27 @@ app.get("/getallaccounts", async (req, res) => {
 });
 
 app.post("/addaccount", async (req, res) => {
+  const {
+    name,
+    email,
+    pancard,
+    bankName,
+    AccountType,
+    FixedDeposits,
+    Balance,
+  } = req.body;
   try {
     const newAcc = new Accounts({
-      name: "mohini",
-      email: "mohini@gmail.com",
-      pancard: "ABCDEFGHIJ",
-      bankName: "SBI",
-      AccountType: "Salary",
-      FixedDeposits: 2,
-      Balance: 430000,
+      name: name,
+      email: email,
+      pancard: pancard,
+      bankName: bankName,
+      AccountType: AccountType,
+      FixedDeposits: FixedDeposits,
+      Balance: Balance,
     });
     await newAcc.save();
-    return res.json(await Accounts.find());
+    return res.json(await AccountSchema.find());
   } catch (err) {
     console.log(err);
   }
